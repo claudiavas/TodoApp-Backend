@@ -1,36 +1,30 @@
-const functions = require("firebase-functions")
-const express = require("express")
+const express = require('express')
+const cors = require('cors');
 const app = express()
-const port = 8000
+const port = 5000;
+const tasksRouter = require('./routes/tasks')
 
-const cors = require("cors")
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(cors());
+app.use('/tasks', tasksRouter)
 
-// Load enviroment variables
-require('dotenv').config()
+//app.get('/', (req, res) => {
+//  console.log("hello")
+//  res.status(200).send("Hello app")
+//})
 
-app.use(express.json())
-app.use(cors())
-
-// Connect to database
-const mongoose = require("mongoose");
-const mongoDB = "mongodb+srv://"+process.env.DB_USER+":"+process.env.DB_PASSWORD+"@"+process.env.DB_SERVER+"/"+process.env.DB_NAME+"?retryWrites=true&w=majority";
-async function main() {
-  await mongoose.connect(mongoDB);
-}
-main().catch(err => console.log(err));
-
-// Load routes
-const tasks = require("./routes/tasks")
-app.use("/tasks",tasks)
-
-app.get('/', (req, res) => {
-  res.send('Hello World!')
-})
-
-//Start server
 app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`)
-})
+  console.log(`Server running on port ${port}`);
+});
 
-// firebase functions
-exports.app = functions.https.onRequest(app)
+module.exports = app; 
+
+
+
+
+
+
+
+
+
